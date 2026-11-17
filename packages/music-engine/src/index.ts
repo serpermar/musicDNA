@@ -5,3 +5,5 @@
 
 export * from './primitives';
 export * from './algorithm';
+export * from './recommendations';
+export * from './comparison';

@@ -95,6 +95,17 @@ export const createProfileSchema = z.object({
   sessionId: uuidSchema,
 });
 
+/** Esquemas sociales de la Fase 7. */
+export const createShareSchema = z.object({
+  profileId: uuidSchema.optional(),
+  visibility: z.enum(['PUBLIC', 'UNLISTED', 'PRIVATE']).default('UNLISTED'),
+  allowedFields: z.array(z.string().max(64)).max(20).optional(),
+});
+
+export const createComparisonSchema = z.object({
+  targetProfileId: uuidSchema,
+});
+
 export type Email = z.infer<typeof emailSchema>;
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type SignInInput = z.infer<typeof signInSchema>;
@@ -105,4 +116,6 @@ export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 export type CreateQuizSessionInput = z.infer<typeof createQuizSessionSchema>;
 export type UpdateProgressInput = z.infer<typeof updateProgressSchema>;
 export type CreateProfileInput = z.infer<typeof createProfileSchema>;
+export type CreateShareInput = z.infer<typeof createShareSchema>;
+export type CreateComparisonInput = z.infer<typeof createComparisonSchema>;
 export type SubmitAnswerInput = z.infer<typeof submitAnswerSchema>;

@@ -16,7 +16,7 @@
 }
 ```
 
-- Códigos de estado: `200` éxito, `201` creación, `204` sin contenido, `400` validación, `401` no autenticado, `403` sin permisos, `404` no encontrado, `429` rate limit, `500` error interno.
+- Códigos de estado: `200` éxito, `201` creación, `204` sin contenido, `400` validación, `401` no autenticado, `403` sin permisos, `404` no encontrado, `429` rate limit, `500` error interno, `503` integración no configurada (por ejemplo, Spotify sin credenciales).
 - Rate limiting global aplicado desde la Fase 1.
 - Ninguna respuesta contendrá secretos, tokens de Spotify ni credenciales.
 
@@ -75,9 +75,24 @@ La Fase 5 no añade endpoints: la web consume los recursos anteriores mediante `
 
 La app Expo reutiliza `createAuthApi` y `createQuizApi`. El bearer token se obtiene de Better Auth en la cabecera `set-auth-token`, se persiste con `expo-secure-store` y se envía en `Authorization` en cada petición. La variable `EXPO_PUBLIC_API_BASE_URL` apunta a `/api/v1` (por defecto `http://localhost:4000/api/v1`).
 
+### Disponibles en la Fase 7
+
+| Método | Ruta                         | Descripción                                                    | Auth |
+| ------ | ---------------------------- | -------------------------------------------------------------- | ---- |
+| GET    | `/api/v1/recommendations/me` | Recomendaciones del último perfil (se calculan la primera vez) | Sí   |
+| GET    | `/api/v1/profiles/history`   | Historial de perfiles, más reciente primero                    | Sí   |
+| POST   | `/api/v1/shares`             | Crear enlace con `{ profileId?, visibility, allowedFields? }`  | Sí   |
+| GET    | `/api/v1/shares/:slug`       | Perfil compartido (sin `userId`, correo ni tokens)             | No   |
+| POST   | `/api/v1/comparisons`        | Comparar con `{ targetProfileId }` propio o `PUBLIC`           | Sí   |
+| GET    | `/api/v1/spotify/status`     | Estado de la conexión (`ACTIVE`, `DISCONNECTED`, `EXPIRED`)    | Sí   |
+| GET    | `/api/v1/spotify/auth`       | Redirige a la autorización de Spotify                          | Sí   |
+| GET    | `/api/v1/spotify/callback`   | Callback público; valida `state` y guarda tokens cifrados      | No   |
+| POST   | `/api/v1/spotify/disconnect` | Borra tokens cifrados y marca la conexión como desconectada    | Sí   |
+
+El callback de Spotify redirige al origen configurado en `CORS_ORIGIN` con `?spotify=connected` o `?spotify=error`. El `state` va firmado con HMAC-SHA256 y caduca en 10 minutos. Si faltan credenciales de Spotify, `/spotify/auth` responde `503 SPOTIFY_UNAVAILABLE`. En ningún caso se devuelven `access_token`, `refresh_token` ni el identificador de Spotify al cliente.
+
 ### Planificados
 
-| Fase | Recursos                                         |
-| ---- | ------------------------------------------------ |
-| 6    | `/genres`, `/recommendations`                    |
-| 7    | `/spotify`, `/comparisons`, `/history`, `/admin` |
+| Fase | Recursos                       |
+| ---- | ------------------------------ |
+| 8    | `/genres`, `/admin`, auditoría |

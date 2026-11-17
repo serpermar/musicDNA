@@ -10,7 +10,7 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 | 4    | MusicDNA               | **Completada** | Algoritmo de puntuación, perfiles y personalidades |
 | 5    | Aplicación web         | **Completada** | Landing, cuestionario, dashboard y resultados      |
 | 6    | Aplicación móvil       | **Completada** | Android/iOS con Expo y NativeWind                  |
-| 7    | Integraciones y social | Pendiente      | Spotify, comparador, compartir e historial         |
+| 7    | Integraciones y social | **Completada** | Spotify, comparador, compartir e historial         |
 | 8    | Calidad y lanzamiento  | Pendiente      | Tests, seguridad, CI/CD y despliegue               |
 
 ## Fase 1 — Fundación
@@ -63,7 +63,7 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 - [x] Cuestionario adaptativo en web: escala, opción única, múltiple, tarjetas y respuesta libre; barra de progreso, navegación y reanudación de la sesión en curso.
 - [x] Visualización de resultados: arquetipo, géneros, década, energía, emoción y rasgos.
 - [x] Acceso como invitado y gestión de cuenta/sesiones conservada de la Fase 2.
-- [ ] Recomendaciones personalizadas en la web (se incorporan con la Fase 7).
+- [x] Recomendaciones personalizadas en la web (incorporadas en la Fase 7).
 
 ## Fase 6 — Aplicación móvil
 
@@ -74,10 +74,21 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 - [x] Gestión de cuenta: perfil, sesiones, cierre de sesión y borrado de cuenta.
 - [x] Interfaz con NativeWind sobre los mismos tokens de marca que la web.
 
+## Fase 7 — Integraciones y social
+
+- [x] `music-engine` genera recomendaciones deterministas y explicables desde el perfil (géneros, energía, década y rasgos).
+- [x] `music-engine` compara perfiles con Jaccard de géneros (50), energía (25), emoción (15) y década (10); resultado simétrico y auditable.
+- [x] Endpoints `GET /recommendations/me`, `GET /profiles/history`, `POST /shares`, `GET /shares/:slug` (público) y `POST /comparisons`.
+- [x] Enlaces compartidos con slug opaco y `SharedProfileView` sin `userId`, correo ni tokens; las comparaciones solo usan perfiles propios o compartidos como `PUBLIC`.
+- [x] Cliente `createSocialApi` compartido; panel social en web (recomendaciones, compartir, comparar e historial) y recomendaciones en la pantalla de resultados móvil.
+- [x] Vista pública web en `/s/:slug` para mostrar un perfil compartido sin autenticación.
+- [x] OAuth opcional de Spotify: `GET /spotify/auth`, `GET /spotify/callback` y `POST /spotify/disconnect`, con state firmado, intercambio de código y tokens cifrados con AES-256-GCM; `GET /spotify/status` nunca devuelve tokens.
+- [x] Tests del motor social, del servicio (inyección de repositorio), de la integración de Spotify (state, cifrado e intercambio) y de protección de rutas.
+
 ## Criterios de desarrollo
 
 - Arquitectura limpia y modular; sin duplicación de lógica de negocio.
 - TypeScript estricto y validación con Zod en las fronteras de datos.
-- Tests para la lógica principal (quiz-engine, music-engine y comparador).
+- Tests para la lógica principal (quiz-engine, music-engine, recomendaciones, comparador y OAuth).
 - Commits organizados, preferiblemente con Conventional Commits.
 - Sin Docker, sin IA y sin dependencia de Spotify para el núcleo del producto.

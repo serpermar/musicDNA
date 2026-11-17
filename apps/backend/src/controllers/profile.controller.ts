@@ -1,14 +1,8 @@
 import type { CreateProfileInput } from '@musicdna/shared';
-import type { Request, RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import { profileService } from '../services/profile.service';
 import { asyncHandler } from '../utils/async-handler';
-import { unauthorized } from '../utils/http-error';
-
-function currentUserId(request: Request): string {
-  const userId = request.authSession?.user?.id;
-  if (!userId) throw unauthorized();
-  return userId;
-}
+import { currentUserId } from '../utils/current-user';
 
 export const createProfile: RequestHandler = asyncHandler(async (req, res) => {
   const input = req.body as CreateProfileInput;

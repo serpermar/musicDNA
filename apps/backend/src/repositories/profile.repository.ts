@@ -12,14 +12,14 @@ export interface CreateProfileData {
   traits: Array<{ id: string; score: number }>;
 }
 
-const profileInclude = {
+export const profileInclude = {
   genreScores: { include: { genre: true } },
   personalityScores: { include: { personalityTrait: true } },
 } as const satisfies Prisma.MusicProfileInclude;
 
 type ProfileRow = Prisma.MusicProfileGetPayload<{ include: typeof profileInclude }>;
 
-function mapProfile(row: ProfileRow): MusicProfile {
+export function mapMusicProfile(row: ProfileRow): MusicProfile {
   const genres = [...row.genreScores]
     .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
     .map((score) => ({
@@ -86,7 +86,24 @@ export const profileRepository = {
       orderBy: { createdAt: 'desc' },
       include: profileInclude,
     });
-    return row ? mapProfile(row) : null;
+    return row ? mapMusicProfile(row) : null;
+  },
+
+  async findProfileById(id: string): Promise<MusicProfile | null> {
+    const row = await prisma.musicProfile.findUnique({
+      where: { id },
+      include: profileInclude,
+    });
+    return row ? mapMusicProfile(row) : null;
+  },
+
+  async listProfilesByUser(userId: string): Promise<MusicProfile[]> {
+    const rows = await prisma.musicProfile.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      include: profileInclude,
+    });
+    return rows.map(mapMusicProfile);
   },
 
   async createProfile(input: CreateProfileData): Promise<MusicProfile> {
@@ -145,6 +162,6 @@ export const profileRepository = {
       where: { id: profileId },
       include: profileInclude,
     });
-    return mapProfile(row);
+    return mapMusicProfile(row);
   },
 };

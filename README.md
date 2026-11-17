@@ -6,7 +6,7 @@ Plataforma multiplataforma de descubrimiento musical y personalidad musical. Mus
 
 ## Estado del proyecto
 
-**Fase 6 — Móvil completada.** El monorepo incluye autenticación con Better Auth, cuestionario adaptativo con sesiones reanudables, el algoritmo determinista `music-engine`, una aplicación web con dashboard/resultados y una app Expo + NativeWind con las mismas pantallas. El token móvil se guarda con `expo-secure-store` y se envía como bearer. Las recomendaciones personalizadas llegarán en la Fase 7.
+**Fase 7 — Integraciones y social completada.** El monorepo incluye autenticación con Better Auth, cuestionario adaptativo reanudable, el algoritmo determinista `music-engine`, aplicaciones web y móvil, recomendaciones y comparador deterministas, historial de perfiles, enlaces compartidos sin datos personales y OAuth opcional de Spotify con tokens cifrados en reposo. Spotify no es necesario para el test ni para el algoritmo.
 
 Ver el plan completo en [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -21,7 +21,7 @@ musicdna/
 ├── packages/
 │   ├── shared/         # Tipos y esquemas Zod compartidos
 │   ├── quiz-engine/    # Motor del cuestionario (Fase 3)
-│   ├── music-engine/   # Algoritmo MusicDNA (Fase 4)
+│   ├── music-engine/   # Algoritmo, recomendaciones y comparador (Fases 4 y 7)
 │   ├── api-client/     # Cliente HTTP tipado (Fase 2)
 │   └── config/         # Configuración y tokens de diseño compartidos
 ├── database/
@@ -90,6 +90,8 @@ pnpm --filter @musicdna/backend dev
 - **Sesiones**: cookies en web y bearer token en móvil; ambas revocables desde `/api/v1/users/me`.
 - **Cuestionario**: `quiz-engine` es puro; el backend solo orquesta persistencia y propiedad de la sesión. Las reglas adaptativas usan `metadata.showIf`.
 - **Algoritmo**: `music-engine` es determinista y auditable (sin IA ni Spotify); los arquetipos se eligen por reglas con umbrales sobre puntuaciones 0-100.
+- **Social**: recomendaciones y compatibilidad se calculan con reglas puras; los enlaces compartidos usan un slug opaco y no exponen `userId`, correo ni tokens.
+- **Spotify**: integración opcional en el backend; el `state` del OAuth va firmado y los tokens se cifran con AES-256-GCM usando `SPOTIFY_TOKEN_KEY`. Nunca se envían al frontend.
 - **Secretos** solo en el backend y en variables de entorno; nunca en el frontend ni en el repositorio.
 - **Sin Docker** en esta etapa del proyecto.
 

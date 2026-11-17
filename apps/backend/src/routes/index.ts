@@ -4,6 +4,12 @@ import { healthController } from '../controllers/health.controller';
 import { requireAuth, resolveSession } from '../middleware/auth';
 import { profilesRouter } from './profile.routes';
 import { quizzesRouter, quizSessionsRouter } from './quiz.routes';
+import {
+  comparisonsRouter,
+  recommendationsRouter,
+  sharesRouter,
+  spotifyRouter,
+} from './social.routes';
 import { usersRouter } from './users.routes';
 
 export const router: Router = Router();
@@ -21,5 +27,10 @@ router.use('/quiz-sessions', quizSessionsRouter);
 // Fase 4: perfiles musicales calculados.
 router.use('/profiles', profilesRouter);
 
-// Fase 5: /genres, /recommendations
-// Fase 7: /spotify, /comparisons, /history, /admin
+// Fase 7: recomendaciones, compartir, comparador y estado de Spotify.
+router.use('/recommendations', recommendationsRouter);
+router.use('/shares', sharesRouter);
+router.use('/comparisons', comparisonsRouter);
+router.use('/spotify', spotifyRouter);
+
+// Pendiente: /genres y /admin.

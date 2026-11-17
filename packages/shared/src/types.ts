@@ -194,3 +194,33 @@ export interface ProfileComparison {
   differences: string[];
   description: string | null;
 }
+
+/** Enlace público para mostrar un perfil sin exponer el userId. */
+export interface SharedProfile {
+  slug: string;
+  profileId: UUID;
+  visibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE';
+  expiresAt: ISODate | null;
+  viewCount: number;
+  createdAt: ISODate;
+}
+
+/** Perfil limitado que se muestra a través de un enlace compartido. */
+export interface SharedProfileView {
+  profileId: UUID;
+  personalityName: string;
+  personalitySlug: string;
+  description: string;
+  dominantGenre: GenreAffinity | null;
+  secondaryGenres: GenreAffinity[];
+  favoriteDecade: string | null;
+  energyScore: number;
+  emotionalScore: number;
+  traits: PersonalityScore[];
+  createdAt: ISODate;
+}
+
+export interface CreateShareResult {
+  share: SharedProfile;
+  url: string;
+}

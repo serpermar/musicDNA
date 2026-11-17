@@ -1,4 +1,9 @@
-import { createApiClient, createAuthApi, createQuizApi } from '@musicdna/api-client';
+import {
+  createApiClient,
+  createAuthApi,
+  createQuizApi,
+  createSocialApi,
+} from '@musicdna/api-client';
 import * as SecureStore from 'expo-secure-store';
 
 const TOKEN_KEY = 'musicdna.auth.token';
@@ -37,3 +42,4 @@ export const api = createApiClient({
 
 export const authApi = createAuthApi(api);
 export const quizApi = createQuizApi(api);
+export const socialApi = createSocialApi(api);

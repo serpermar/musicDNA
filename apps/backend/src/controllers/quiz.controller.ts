@@ -2,13 +2,8 @@ import type { SubmitAnswerInput } from '@musicdna/shared';
 import type { Request, RequestHandler } from 'express';
 import { quizService } from '../services/quiz.service';
 import { asyncHandler } from '../utils/async-handler';
-import { badRequest, unauthorized } from '../utils/http-error';
-
-function currentUserId(request: Request): string {
-  const userId = request.authSession?.user?.id;
-  if (!userId) throw unauthorized();
-  return userId;
-}
+import { currentUserId } from '../utils/current-user';
+import { badRequest } from '../utils/http-error';
 
 function param(request: { params: Record<string, string | string[]> }, name: string): string {
   const value = request.params[name];

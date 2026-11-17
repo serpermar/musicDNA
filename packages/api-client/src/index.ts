@@ -70,3 +70,4 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
 
 export { createAuthApi, type AuthApi } from './auth';
 export { createQuizApi, type QuizApi } from './quiz';
+export { createSocialApi, type SocialApi } from './social';

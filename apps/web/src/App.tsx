@@ -7,11 +7,12 @@ import type {
 import { useEffect, useState, type FormEvent } from 'react';
 import { ProfileResult } from './components/ProfileResult';
 import { QuizFlow } from './components/QuizFlow';
+import { SocialPanel } from './components/SocialPanel';
 import { authApi, quizApi } from './lib/api';
 import { errorMessage } from './lib/error-message';
 
 type Mode = 'login' | 'register' | 'reset-request' | 'reset-confirm';
-type Tab = 'result' | 'quiz' | 'account';
+type Tab = 'result' | 'quiz' | 'social' | 'account';
 
 const inputClass =
   'w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary';
@@ -219,6 +220,7 @@ export default function App() {
                 [
                   ['result', 'Mi MusicDNA'],
                   ['quiz', 'Cuestionario'],
+                  ['social', 'Comunidad'],
                   ['account', 'Mi cuenta'],
                 ] as const
               ).map(([value, label]) => (
@@ -265,6 +267,17 @@ export default function App() {
                 sessionId={quizSessionId}
               />
             )}
+
+            {tab === 'social' &&
+              (musicProfile ? (
+                <SocialPanel profile={musicProfile} />
+              ) : (
+                <div className="rounded-card border border-border bg-background/60 p-8 text-center">
+                  <p className="text-sm text-textMuted">
+                    Completa el cuestionario para ver recomendaciones y compartir tu perfil.
+                  </p>
+                </div>
+              ))}
 
             {tab === 'account' && (
               <div className="space-y-6">

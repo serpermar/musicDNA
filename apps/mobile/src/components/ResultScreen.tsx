@@ -1,5 +1,7 @@
-import type { MusicProfile } from '@musicdna/shared';
+import type { MusicProfile, Recommendation } from '@musicdna/shared';
+import { useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
+import { socialApi } from '../lib/api';
 import { Card, Button, ScoreBar } from './ui';
 
 export function ResultScreen({
@@ -9,9 +11,25 @@ export function ResultScreen({
   profile: MusicProfile;
   onRetake: () => void;
 }) {
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const genres = [profile.dominantGenre, ...profile.secondaryGenres].filter(
     (genre) => genre !== null,
   );
+
+  useEffect(() => {
+    let active = true;
+    socialApi
+      .getRecommendations()
+      .then((response) => {
+        if (active) setRecommendations(response.recommendations);
+      })
+      .catch(() => {
+        // Las recomendaciones son opcionales; el perfil ya está disponible.
+      });
+    return () => {
+      active = false;
+    };
+  }, [profile.id]);
 
   return (
     <ScrollView className="mt-4">
@@ -57,6 +75,18 @@ export function ResultScreen({
           <Text className="mb-4 text-sm font-semibold text-text">Tus rasgos</Text>
           {profile.traits.map((trait) => (
             <ScoreBar key={trait.traitSlug} label={trait.label} value={trait.score} />
+          ))}
+        </Card>
+      )}
+
+      {recommendations.length > 0 && (
+        <Card className="mt-4">
+          <Text className="mb-3 text-sm font-semibold text-text">Recomendaciones</Text>
+          {recommendations.slice(0, 5).map((item) => (
+            <View className="mb-3" key={item.id}>
+              <Text className="text-sm font-semibold text-text">{item.title}</Text>
+              {item.reason && <Text className="mt-1 text-xs text-textMuted">{item.reason}</Text>}
+            </View>
           ))}
         </Card>
       )}
