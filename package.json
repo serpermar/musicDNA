@@ -18,6 +18,7 @@
     "format:check": "prettier --check .",
     "db:generate": "pnpm --filter @musicdna/backend db:generate",
     "db:migrate": "pnpm --filter @musicdna/backend db:migrate",
+    "db:seed": "pnpm --filter @musicdna/backend db:seed",
     "db:studio": "pnpm --filter @musicdna/backend db:studio"
   },
   "devDependencies": {

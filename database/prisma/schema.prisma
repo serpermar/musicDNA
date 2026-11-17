@@ -243,6 +243,7 @@ model UserResponse {
   quizSessionId String   @map("quiz_session_id") @db.Uuid
   questionId    String   @map("question_id") @db.Uuid
   answerId      String?  @map("answer_id") @db.Uuid
+  answerIds     String[] @default([]) @map("answer_ids") @db.Uuid
   numericValue  Decimal? @map("numeric_value") @db.Decimal(5, 2)
   textValue     String?  @map("text_value") @db.Text
   createdAt     DateTime @default(now()) @map("created_at")

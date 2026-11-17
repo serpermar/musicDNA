@@ -6,7 +6,7 @@ Plataforma multiplataforma de descubrimiento musical y personalidad musical. Mus
 
 ## Estado del proyecto
 
-**Fase 2 — Autenticación completada.** El monorepo incluye la estructura base, el modelo de datos con su migración inicial, autenticación con Better Auth (email/contraseña, invitados, bearer para móvil, sesiones revocables y recuperación de contraseña), hashes Argon2id, API REST para el usuario actual y una pantalla web funcional de acceso/perfil. El cuestionario y el algoritmo se incorporarán en las fases 3 y 4.
+**Fase 3 — Cuestionario completada.** El monorepo incluye la estructura base, el modelo de datos con su migración inicial, autenticación con Better Auth (email/contraseña, invitados, bearer para móvil, sesiones revocables y recuperación de contraseña), hashes Argon2id, API REST para el usuario actual, una pantalla web funcional de acceso/perfil y el cuestionario completo: motor puro con reglas adaptativas, sesiones, respuestas validadas, progreso y seed del quiz "MusicDNA Core". El algoritmo de perfil se incorporará en la Fase 4.
 
 Ver el plan completo en [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -61,6 +61,7 @@ pnpm lint         # lint del monorepo
 pnpm test         # tests del monorepo
 pnpm db:generate  # genera el cliente de Prisma
 pnpm db:migrate   # aplica migraciones (requiere DATABASE_URL)
+pnpm db:seed      # carga el quiz "MusicDNA Core" (requiere DATABASE_URL)
 pnpm db:studio    # abre Prisma Studio
 ```
 
@@ -87,6 +88,7 @@ pnpm --filter @musicdna/backend dev
 - **Dominio** en paquetes separados: `quiz-engine` y `music-engine` no dependen de Spotify ni de IA.
 - **Autenticación** centralizada en Better Auth; el backend mapea su esquema sobre Prisma y hashea contraseñas con Argon2id.
 - **Sesiones**: cookies en web y bearer token en móvil; ambas revocables desde `/api/v1/users/me`.
+- **Cuestionario**: `quiz-engine` es puro; el backend solo orquesta persistencia y propiedad de la sesión. Las reglas adaptativas usan `metadata.showIf`.
 - **Secretos** solo en el backend y en variables de entorno; nunca en el frontend ni en el repositorio.
 - **Sin Docker** en esta etapa del proyecto.
 

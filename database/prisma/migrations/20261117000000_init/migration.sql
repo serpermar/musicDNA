@@ -169,6 +169,7 @@ CREATE TABLE "user_responses" (
     "quiz_session_id" UUID NOT NULL,
     "question_id" UUID NOT NULL,
     "answer_id" UUID,
+    "answer_ids" UUID[] DEFAULT ARRAY[]::UUID[],
     "numeric_value" DECIMAL(5,2),
     "text_value" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

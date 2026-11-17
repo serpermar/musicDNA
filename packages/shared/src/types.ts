@@ -65,16 +65,22 @@ export interface QuestionOption {
   label: string;
   value: string;
   position: number;
+  /** Pesos usados por music-engine: { genres: {...}, energy: 0.6 }. */
+  scores?: Record<string, unknown>;
 }
 
 export interface Question {
   id: UUID;
   key: string;
   prompt: string;
+  helpText?: string | null;
   type: QuestionType;
   category: string;
   weight: number;
   position: number;
+  isAdaptive?: boolean;
+  /** Reglas opcionales, por ejemplo { showIf: { questionKey, answerValue } }. */
+  metadata?: Record<string, unknown> | null;
   options: QuestionOption[];
 }
 
@@ -89,6 +95,7 @@ export interface Quiz {
 export interface QuizSession {
   id: UUID;
   quizId: UUID;
+  userId: UUID | null;
   status: QuizSessionStatus;
   currentQuestionIndex: number;
   startedAt: ISODate;
@@ -97,7 +104,8 @@ export interface QuizSession {
 
 export interface UserResponse {
   questionId: UUID;
-  answerId: UUID | null;
+  answerId?: UUID | null;
+  answerIds?: UUID[];
   numericValue?: number;
   textValue?: string;
 }

@@ -44,10 +44,23 @@
 | GET    | `/api/v1/users/me/sessions`            | Listar sesiones (sin tokens)            |
 | DELETE | `/api/v1/users/me/sessions/:sessionId` | Revocar una sesión                      |
 
+### Disponibles en la Fase 3
+
+| Método | Ruta                                         | Descripción                                             | Auth |
+| ------ | -------------------------------------------- | ------------------------------------------------------- | ---- |
+| GET    | `/api/v1/quizzes/active`                     | Quiz activo (devuelve `{ quiz: null }` si no hay)       | No   |
+| GET    | `/api/v1/quizzes/:quizId`                    | Quiz con preguntas y opciones                           | No   |
+| POST   | `/api/v1/quiz-sessions`                      | Crear sesión (`quizId` o `slug`, por defecto el activo) | Sí   |
+| GET    | `/api/v1/quiz-sessions/:sessionId`           | Sesión, quiz, vista adaptativa y respuestas             | Sí   |
+| PATCH  | `/api/v1/quiz-sessions/:sessionId/progress`  | Fijar `currentQuestionIndex` visible                    | Sí   |
+| POST   | `/api/v1/quiz-sessions/:sessionId/responses` | Enviar `{ sessionId, response }` validado               | Sí   |
+| POST   | `/api/v1/quiz-sessions/:sessionId/complete`  | Cerrar sesión si no faltan preguntas visibles           | Sí   |
+
+El cuerpo de `/responses` usa `submitAnswerSchema`: `sessionId` debe coincidir con el de la ruta. La vista de una sesión incluye `view.questions` (preguntas visibles tras aplicar `showIf`), `view.progress` (`answered`, `total`, `percent`) y `view.nextQuestionIndex`. Solo el dueño de la sesión puede consultarla o modificarla; el resto recibe `403`.
+
 ### Planificados
 
 | Fase | Recursos                                         |
 | ---- | ------------------------------------------------ |
-| 3    | `/quizzes`, `/questions`, `/responses`           |
 | 4    | `/profiles`, `/genres`, `/recommendations`       |
 | 7    | `/spotify`, `/comparisons`, `/history`, `/admin` |

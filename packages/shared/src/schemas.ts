@@ -61,11 +61,16 @@ export const userResponseSchema = z
   .object({
     questionId: uuidSchema,
     answerId: uuidSchema.nullable().optional(),
+    answerIds: z.array(uuidSchema).min(1).optional(),
     numericValue: z.number().min(0).max(100).optional(),
     textValue: z.string().max(2000).optional(),
   })
   .refine(
-    (value) => value.answerId != null || value.numericValue != null || value.textValue != null,
+    (value) =>
+      value.answerId != null ||
+      (value.answerIds?.length ?? 0) > 0 ||
+      value.numericValue != null ||
+      value.textValue != null,
     {
       message: 'La respuesta debe incluir una opción, un valor numérico o un texto',
     },
@@ -76,6 +81,15 @@ export const submitAnswerSchema = z.object({
   response: userResponseSchema,
 });
 
+export const createQuizSessionSchema = z.object({
+  quizId: uuidSchema.optional(),
+  slug: z.string().min(1).max(64).optional(),
+});
+
+export const updateProgressSchema = z.object({
+  currentQuestionIndex: z.number().int().min(0).max(1000),
+});
+
 export type Email = z.infer<typeof emailSchema>;
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type SignInInput = z.infer<typeof signInSchema>;
@@ -83,4 +97,6 @@ export type RequestPasswordResetInput = z.infer<typeof requestPasswordResetSchem
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+export type CreateQuizSessionInput = z.infer<typeof createQuizSessionSchema>;
+export type UpdateProgressInput = z.infer<typeof updateProgressSchema>;
 export type SubmitAnswerInput = z.infer<typeof submitAnswerSchema>;
