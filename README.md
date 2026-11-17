@@ -6,7 +6,7 @@ Plataforma multiplataforma de descubrimiento musical y personalidad musical. Mus
 
 ## Estado del proyecto
 
-**Fase 4 — MusicDNA completada.** El monorepo incluye autenticación con Better Auth, cuestionario adaptativo con sesiones y progreso, y el algoritmo determinista `music-engine`: afinidades por género, década, instrumentos, energía, emoción y rasgos, con 8 arquetipos de personalidad. El perfil calculado se persiste y se expone vía `/api/v1/profiles`. La interfaz web del cuestionario y los resultados llegan en la Fase 5.
+**Fase 5 — Web completada.** El monorepo incluye autenticación con Better Auth, cuestionario adaptativo con sesiones reanudables, el algoritmo determinista `music-engine` y una aplicación web con dashboard, cuestionario y resultados visuales (arquetipo, géneros, década, energía, emoción y rasgos). Las recomendaciones personalizadas llegarán en fases posteriores.
 
 Ver el plan completo en [`docs/roadmap.md`](docs/roadmap.md).
 

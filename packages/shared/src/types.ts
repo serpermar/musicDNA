@@ -140,6 +140,42 @@ export interface MusicProfile {
   createdAt: ISODate;
 }
 
+/** Progreso tal como lo devuelve quiz-engine (Fase 3). */
+export interface QuizProgressPayload {
+  answered: number;
+  total: number;
+  percent: number;
+}
+
+export interface QuizViewPayload {
+  questions: Question[];
+  progress: QuizProgressPayload;
+  nextQuestionIndex: number;
+}
+
+export interface QuizSessionDetailResponse {
+  session: QuizSession;
+  quiz: Quiz;
+  view: QuizViewPayload;
+  responses: UserResponse[];
+}
+
+export interface SubmitResponseResult {
+  response: UserResponse;
+  progress: QuizProgressPayload;
+  nextQuestionIndex: number;
+}
+
+export interface CompletionResultPayload {
+  canComplete: boolean;
+  missingQuestionIds: UUID[];
+}
+
+export interface CompleteSessionResult {
+  session: QuizSession;
+  completion: CompletionResultPayload;
+}
+
 export interface Recommendation {
   id: UUID;
   kind: RecommendationKind;

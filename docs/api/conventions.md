@@ -67,9 +67,13 @@ El cuerpo de `/responses` usa `submitAnswerSchema`: `sessionId` debe coincidir c
 
 `POST /profiles` devuelve `201` con afinidades de género (dominante + secundarias), década favorita, energía, emoción, rasgos y arquetipo. Solo se puede generar a partir de una sesión propia en estado `COMPLETED`; repetir la llamada sobre la misma sesión actualiza el perfil existente. Los géneros y rasgos se resuelven contra los catálogos cargados por `pnpm db:seed`.
 
+### Fase 5 — Cliente web
+
+La Fase 5 no añade endpoints: la web consume los recursos anteriores mediante `createQuizApi` (`@musicdna/api-client`), que cubre catálogo, sesiones, respuestas, cierre y perfil. La UI reanuda sesiones `IN_PROGRESS` y crea una nueva cuando la sesión no existe o ya está cerrada.
+
 ### Planificados
 
 | Fase | Recursos                                         |
 | ---- | ------------------------------------------------ |
-| 5    | `/genres`, `/recommendations`                    |
+| 6    | `/genres`, `/recommendations`                    |
 | 7    | `/spotify`, `/comparisons`, `/history`, `/admin` |

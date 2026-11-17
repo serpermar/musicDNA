@@ -8,7 +8,7 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 | 2    | Autenticación          | **Completada** | Registro, login, sesiones y perfil de usuario      |
 | 3    | Cuestionario           | **Completada** | Preguntas, respuestas, sesiones y Quiz Engine      |
 | 4    | MusicDNA               | **Completada** | Algoritmo de puntuación, perfiles y personalidades |
-| 5    | Aplicación web         | Pendiente      | Landing, cuestionario, dashboard y recomendaciones |
+| 5    | Aplicación web         | **Completada** | Landing, cuestionario, dashboard y resultados      |
 | 6    | Aplicación móvil       | Pendiente      | Android/iOS con Expo y NativeWind                  |
 | 7    | Integraciones y social | Pendiente      | Spotify, comparador, compartir e historial         |
 | 8    | Calidad y lanzamiento  | Pendiente      | Tests, seguridad, CI/CD y despliegue               |
@@ -54,6 +54,16 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 - [x] Rutas `POST /profiles` y `GET /profiles/me` con autenticación y validación Zod.
 - [x] Seed extendido con géneros y rasgos necesarios para la persistencia.
 - [x] Tests del algoritmo, del servicio de perfiles y de protección de rutas.
+
+## Fase 5 — Aplicación web
+
+- [x] Cliente `createQuizApi` compartido (catálogo, sesiones, respuestas, cierre y perfil).
+- [x] Tipos de respuesta del quiz incorporados a `@musicdna/shared`.
+- [x] Dashboard con pestañas: resultados, cuestionario y cuenta.
+- [x] Cuestionario adaptativo en web: escala, opción única, múltiple, tarjetas y respuesta libre; barra de progreso, navegación y reanudación de la sesión en curso.
+- [x] Visualización de resultados: arquetipo, géneros, década, energía, emoción y rasgos.
+- [x] Acceso como invitado y gestión de cuenta/sesiones conservada de la Fase 2.
+- [ ] Recomendaciones personalizadas en la web (se incorporan con la Fase 7).
 
 ## Criterios de desarrollo
 
