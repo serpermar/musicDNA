@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@musicdna/shared": ["packages/shared/src/index.ts"],
+      "@musicdna/shared/*": ["packages/shared/src/*"],
+      "@musicdna/quiz-engine": ["packages/quiz-engine/src/index.ts"],
+      "@musicdna/music-engine": ["packages/music-engine/src/index.ts"],
+      "@musicdna/api-client": ["packages/api-client/src/index.ts"],
+      "@musicdna/config": ["packages/config/src/index.ts"],
+      "@musicdna/config/*": ["packages/config/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", ".turbo"]
+}

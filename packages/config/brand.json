@@ -1,0 +1,28 @@
+{
+  "colors": {
+    "background": "#0B0B14",
+    "surface": "#151525",
+    "surfaceAlt": "#1E1E33",
+    "primary": "#8B5CF6",
+    "primaryDark": "#6D28D9",
+    "secondary": "#2563EB",
+    "pink": "#EC4899",
+    "orange": "#F97316",
+    "text": "#F8FAFC",
+    "textMuted": "#A5B4FC",
+    "border": "#2D2D45",
+    "success": "#34D399",
+    "error": "#F87171"
+  },
+  "fonts": {
+    "body": "Inter, system-ui, sans-serif",
+    "heading": "'Plus Jakarta Sans', Inter, system-ui, sans-serif"
+  },
+  "radius": {
+    "card": "16px",
+    "pill": "9999px"
+  },
+  "api": {
+    "prefix": "/api/v1"
+  }
+}

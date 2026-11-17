@@ -1,0 +1,433 @@
+// MusicDNA — modelo relacional (Fase 1)
+// Convenciones: modelos en PascalCase, tablas en snake_case mediante @@map.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProfileVisibility {
+  PUBLIC
+  UNLISTED
+  PRIVATE
+}
+
+enum SharedProfileVisibility {
+  PUBLIC
+  UNLISTED
+  PRIVATE
+}
+
+enum QuizQuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  SCALE
+  TWO_OPTION
+  VISUAL_CARD
+  ADAPTIVE
+}
+
+enum QuizSessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum FavoriteKind {
+  ARTIST
+  SONG
+  GENRE
+  PLAYLIST
+}
+
+enum RecommendationKind {
+  ARTIST
+  SONG
+  GENRE
+  PLAYLIST
+  COMFORT_ZONE
+}
+
+enum SpotifyConnectionStatus {
+  ACTIVE
+  DISCONNECTED
+  EXPIRED
+}
+
+model User {
+  id              String            @id @default(uuid()) @db.Uuid
+  email           String            @unique @db.VarChar(255)
+  passwordHash    String?           @map("password_hash") @db.VarChar(255)
+  displayName     String?           @map("display_name") @db.VarChar(80)
+  isGuest         Boolean           @default(false) @map("is_guest")
+  emailVerifiedAt DateTime?         @map("email_verified_at")
+  privacy         ProfileVisibility @default(PRIVATE)
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  deletedAt       DateTime?         @map("deleted_at")
+
+  sessions              Session[]
+  profile               UserProfile?
+  quizSessions          QuizSession[]
+  musicProfiles         MusicProfile[]
+  favorites             UserFavorite[]
+  spotifyConnection     SpotifyConnection?
+  comparisonsRequested  ProfileComparison[] @relation("ComparisonRequester")
+  sharedProfiles        SharedProfile[]     @relation("SharedByUser")
+
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique @db.VarChar(255)
+  expiresAt DateTime @map("expires_at")
+  ipAddress String?  @map("ip_address") @db.VarChar(64)
+  userAgent String?  @map("user_agent") @db.Text
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model UserProfile {
+  id                    String   @id @default(uuid()) @db.Uuid
+  userId                String   @unique @map("user_id") @db.Uuid
+  bio                   String?  @db.Text
+  avatarUrl             String?  @map("avatar_url") @db.VarChar(512)
+  countryCode           String?  @map("country_code") @db.VarChar(2)
+  birthYear             Int?     @map("birth_year")
+  shareResultsByDefault Boolean  @default(false) @map("share_results_by_default")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model Quiz {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique @db.VarChar(64)
+  title       String   @db.VarChar(160)
+  description String?  @db.Text
+  version     Int      @default(1)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  questions Question[]
+  sessions  QuizSession[]
+
+  @@map("quizzes")
+}
+
+model Question {
+  id             String           @id @default(uuid()) @db.Uuid
+  quizId         String           @map("quiz_id") @db.Uuid
+  key            String           @db.VarChar(64)
+  prompt         String           @db.Text
+  helpText       String?          @map("help_text") @db.Text
+  type           QuizQuestionType
+  category       String           @db.VarChar(64)
+  weight         Decimal          @default(1) @db.Decimal(5, 2)
+  position       Int              @default(0)
+  isActive       Boolean          @default(true) @map("is_active")
+  isAdaptive     Boolean          @default(false) @map("is_adaptive")
+  metadata       Json?
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  quiz      Quiz            @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers   Answer[]
+  responses UserResponse[]
+
+  @@unique([quizId, key])
+  @@index([quizId, position])
+  @@map("questions")
+}
+
+model Answer {
+  id         String   @id @default(uuid()) @db.Uuid
+  questionId String   @map("question_id") @db.Uuid
+  label      String   @db.VarChar(160)
+  value      String   @db.VarChar(160)
+  position   Int      @default(0)
+  isActive   Boolean  @default(true) @map("is_active")
+  // Pesos de puntuación: { "genres": { "indie": 2 }, "energy": 0.6 }
+  scores     Json
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, value])
+  @@index([questionId, position])
+  @@map("answers")
+}
+
+model QuizSession {
+  id                  String            @id @default(uuid()) @db.Uuid
+  userId              String?           @map("user_id") @db.Uuid
+  quizId              String            @map("quiz_id") @db.Uuid
+  status              QuizSessionStatus @default(IN_PROGRESS)
+  currentQuestionIndex Int               @default(0) @map("current_question_index")
+  startedAt           DateTime          @default(now()) @map("started_at")
+  completedAt         DateTime?         @map("completed_at")
+  expiresAt           DateTime?         @map("expires_at")
+  createdAt           DateTime          @default(now()) @map("created_at")
+  updatedAt           DateTime          @updatedAt @map("updated_at")
+
+  user         User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  quiz         Quiz           @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  responses    UserResponse[]
+  musicProfile MusicProfile?
+
+  @@index([userId, status])
+  @@index([quizId, createdAt])
+  @@map("quiz_sessions")
+}
+
+model UserResponse {
+  id            String   @id @default(uuid()) @db.Uuid
+  quizSessionId String   @map("quiz_session_id") @db.Uuid
+  questionId    String   @map("question_id") @db.Uuid
+  answerId      String?  @map("answer_id") @db.Uuid
+  numericValue  Decimal? @map("numeric_value") @db.Decimal(5, 2)
+  textValue     String?  @map("text_value") @db.Text
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  quizSession QuizSession @relation(fields: [quizSessionId], references: [id], onDelete: Cascade)
+  question    Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([quizSessionId, questionId])
+  @@index([quizSessionId])
+  @@map("user_responses")
+}
+
+model MusicProfile {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  quizSessionId    String?  @unique @map("quiz_session_id") @db.Uuid
+  personalityName  String   @map("personality_name") @db.VarChar(120)
+  personalitySlug  String   @map("personality_slug") @db.VarChar(120)
+  description      String   @db.Text
+  dominantGenreId  String?  @map("dominant_genre_id") @db.Uuid
+  favoriteDecade   String?  @map("favorite_decade") @db.VarChar(16)
+  energyScore      Decimal  @map("energy_score") @db.Decimal(5, 2)
+  emotionalScore   Decimal  @map("emotional_score") @db.Decimal(5, 2)
+  algorithmVersion String   @map("algorithm_version") @db.VarChar(32)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizSession       QuizSession?         @relation(fields: [quizSessionId], references: [id], onDelete: SetNull)
+  dominantGenre     MusicGenre?          @relation("DominantGenre", fields: [dominantGenreId], references: [id], onDelete: SetNull)
+  genreScores       GenreScore[]
+  personalityScores PersonalityScore[]
+  recommendations   Recommendation[]
+  comparisonsAsSource ProfileComparison[] @relation("ComparisonSource")
+  comparisonsAsTarget ProfileComparison[] @relation("ComparisonTargetProfile")
+  sharedProfiles    SharedProfile[]
+
+  @@index([userId, createdAt])
+  @@map("music_profiles")
+}
+
+model MusicGenre {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique @db.VarChar(64)
+  name        String   @db.VarChar(120)
+  parentId    String?  @map("parent_id") @db.Uuid
+  description String?  @db.Text
+  colorHex    String?  @map("color_hex") @db.VarChar(7)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  parent             MusicGenre?     @relation("GenreTree", fields: [parentId], references: [id], onDelete: SetNull)
+  subgenres          MusicGenre[]    @relation("GenreTree")
+  genreScores        GenreScore[]
+  dominantForProfiles MusicProfile[]  @relation("DominantGenre")
+  recommendations    Recommendation[]
+  artists            Artist[]
+  favorites          UserFavorite[]
+
+  @@index([parentId])
+  @@map("music_genres")
+}
+
+model GenreScore {
+  id             String   @id @default(uuid()) @db.Uuid
+  musicProfileId String   @map("music_profile_id") @db.Uuid
+  genreId        String   @map("genre_id") @db.Uuid
+  score          Decimal  @db.Decimal(5, 2)
+  rank           Int?
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  musicProfile MusicProfile @relation(fields: [musicProfileId], references: [id], onDelete: Cascade)
+  genre        MusicGenre   @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@unique([musicProfileId, genreId])
+  @@index([musicProfileId, score])
+  @@map("genre_scores")
+}
+
+model PersonalityTrait {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique @db.VarChar(64)
+  label       String   @db.VarChar(120)
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  scores PersonalityScore[]
+
+  @@map("personality_traits")
+}
+
+model PersonalityScore {
+  id               String   @id @default(uuid()) @db.Uuid
+  musicProfileId   String   @map("music_profile_id") @db.Uuid
+  personalityTraitId String  @map("personality_trait_id") @db.Uuid
+  score            Decimal  @db.Decimal(5, 2)
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  musicProfile    MusicProfile     @relation(fields: [musicProfileId], references: [id], onDelete: Cascade)
+  personalityTrait PersonalityTrait @relation(fields: [personalityTraitId], references: [id], onDelete: Cascade)
+
+  @@unique([musicProfileId, personalityTraitId])
+  @@index([musicProfileId, score])
+  @@map("personality_scores")
+}
+
+model Artist {
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String   @db.VarChar(200)
+  slug       String   @unique @db.VarChar(200)
+  genreId    String?  @map("genre_id") @db.Uuid
+  spotifyId  String?  @unique @map("spotify_id") @db.VarChar(64)
+  imageUrl   String?  @map("image_url") @db.VarChar(512)
+  popularity Int?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  genre           MusicGenre?     @relation(fields: [genreId], references: [id], onDelete: SetNull)
+  recommendations Recommendation[]
+  favorites       UserFavorite[]
+
+  @@index([genreId])
+  @@map("artists")
+}
+
+model Recommendation {
+  id             String            @id @default(uuid()) @db.Uuid
+  musicProfileId String            @map("music_profile_id") @db.Uuid
+  kind           RecommendationKind
+  genreId        String?           @map("genre_id") @db.Uuid
+  artistId       String?           @map("artist_id") @db.Uuid
+  title          String            @db.VarChar(200)
+  reason         String?           @db.Text
+  externalUrl    String?           @map("external_url") @db.VarChar(512)
+  score          Decimal           @db.Decimal(5, 2)
+  position       Int               @default(0)
+  createdAt      DateTime          @default(now()) @map("created_at")
+
+  musicProfile MusicProfile @relation(fields: [musicProfileId], references: [id], onDelete: Cascade)
+  genre        MusicGenre?  @relation(fields: [genreId], references: [id], onDelete: SetNull)
+  artist       Artist?      @relation(fields: [artistId], references: [id], onDelete: SetNull)
+
+  @@index([musicProfileId, kind, position])
+  @@map("recommendations")
+}
+
+model UserFavorite {
+  id         String      @id @default(uuid()) @db.Uuid
+  userId     String      @map("user_id") @db.Uuid
+  kind       FavoriteKind
+  title      String      @db.VarChar(200)
+  externalId String?     @map("external_id") @db.VarChar(128)
+  genreId    String?     @map("genre_id") @db.Uuid
+  artistId   String?     @map("artist_id") @db.Uuid
+  metadata   Json?
+  createdAt  DateTime    @default(now()) @map("created_at")
+
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  genre  MusicGenre? @relation(fields: [genreId], references: [id], onDelete: SetNull)
+  artist Artist?     @relation(fields: [artistId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, kind, externalId])
+  @@index([userId, createdAt])
+  @@map("user_favorites")
+}
+
+model SpotifyConnection {
+  id              String                  @id @default(uuid()) @db.Uuid
+  userId          String                  @unique @map("user_id") @db.Uuid
+  spotifyUserId   String?                 @map("spotify_user_id") @db.VarChar(128)
+  // Los tokens se almacenan CIFRADOS en reposo. Nunca se envían al frontend.
+  accessToken     String                  @map("access_token") @db.Text
+  refreshToken    String                  @map("refresh_token") @db.Text
+  scope           String?                 @db.Text
+  tokenExpiresAt  DateTime                @map("token_expires_at")
+  status          SpotifyConnectionStatus @default(ACTIVE)
+  connectedAt     DateTime                @default(now()) @map("connected_at")
+  disconnectedAt  DateTime?               @map("disconnected_at")
+  createdAt       DateTime                @default(now()) @map("created_at")
+  updatedAt       DateTime                @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("spotify_connections")
+}
+
+model ProfileComparison {
+  id                 String   @id @default(uuid()) @db.Uuid
+  sourceProfileId    String   @map("source_profile_id") @db.Uuid
+  targetProfileId    String   @map("target_profile_id") @db.Uuid
+  requestedByUserId  String?  @map("requested_by_user_id") @db.Uuid
+  compatibilityScore Decimal  @map("compatibility_score") @db.Decimal(5, 2)
+  sharedGenres       Json?
+  differences        Json?
+  description        String?  @db.Text
+  algorithmVersion   String   @map("algorithm_version") @db.VarChar(32)
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  sourceProfile MusicProfile @relation("ComparisonSource", fields: [sourceProfileId], references: [id], onDelete: Cascade)
+  targetProfile MusicProfile @relation("ComparisonTargetProfile", fields: [targetProfileId], references: [id], onDelete: Cascade)
+  requestedBy   User?        @relation("ComparisonRequester", fields: [requestedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([sourceProfileId, targetProfileId])
+  @@index([sourceProfileId, createdAt])
+  @@map("profile_comparisons")
+}
+
+model SharedProfile {
+  id             String                @id @default(uuid()) @db.Uuid
+  musicProfileId String                @map("music_profile_id") @db.Uuid
+  sharedByUserId String                @map("shared_by_user_id") @db.Uuid
+  slug           String                @unique @db.VarChar(64)
+  visibility     SharedProfileVisibility @default(PRIVATE)
+  allowedFields  Json?
+  expiresAt      DateTime?             @map("expires_at")
+  viewCount      Int                   @default(0) @map("view_count")
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+
+  musicProfile MusicProfile @relation(fields: [musicProfileId], references: [id], onDelete: Cascade)
+  sharedBy     User         @relation("SharedByUser", fields: [sharedByUserId], references: [id], onDelete: Cascade)
+
+  @@index([sharedByUserId])
+  @@index([musicProfileId])
+  @@map("shared_profiles")
+}

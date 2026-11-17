@@ -1,0 +1,39 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Builds y cachés
+dist/
+build/
+.turbo/
+.next/
+.expo/
+.expo-shared/
+*.tsbuildinfo
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor / SO
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Archivos locales
+*.local

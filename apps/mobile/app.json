@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "MusicDNA",
+    "slug": "musicdna",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "musicdna",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.musicdna.app"
+    },
+    "android": {
+      "package": "com.musicdna.app"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
