@@ -1,5 +1,6 @@
-// MusicDNA — modelo relacional (Fase 1)
+// MusicDNA — modelo relacional (Fase 2)
 // Convenciones: modelos en PascalCase, tablas en snake_case mediante @@map.
+// Las entidades User/Session/Account/Verification siguen el esquema central de Better Auth.
 
 generator client {
   provider = "prisma-client-js"
@@ -59,18 +60,19 @@ enum SpotifyConnectionStatus {
 }
 
 model User {
-  id              String            @id @default(uuid()) @db.Uuid
-  email           String            @unique @db.VarChar(255)
-  passwordHash    String?           @map("password_hash") @db.VarChar(255)
-  displayName     String?           @map("display_name") @db.VarChar(80)
-  isGuest         Boolean           @default(false) @map("is_guest")
-  emailVerifiedAt DateTime?         @map("email_verified_at")
-  privacy         ProfileVisibility @default(PRIVATE)
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  deletedAt       DateTime?         @map("deleted_at")
+  id            String            @id @default(uuid()) @db.Uuid
+  email         String            @unique @db.VarChar(255)
+  displayName   String            @default("") @map("display_name") @db.VarChar(80)
+  emailVerified Boolean           @default(false) @map("email_verified")
+  avatarUrl     String?           @map("avatar_url") @db.VarChar(512)
+  isGuest       Boolean           @default(false) @map("is_guest")
+  privacy       ProfileVisibility @default(PRIVATE)
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  deletedAt     DateTime?         @map("deleted_at")
 
   sessions              Session[]
+  accounts              Account[]
   profile               UserProfile?
   quizSessions          QuizSession[]
   musicProfiles         MusicProfile[]
@@ -101,11 +103,48 @@ model Session {
   @@map("sessions")
 }
 
+// Cuenta de autenticación de Better Auth. Las contraseñas se guardan aquí
+// como hashes Argon2id; nunca en la tabla de usuarios.
+model Account {
+  id                    String    @id @default(uuid()) @db.Uuid
+  accountId             String    @map("account_id") @db.VarChar(255)
+  providerId            String    @map("provider_id") @db.VarChar(64)
+  userId                String    @map("user_id") @db.Uuid
+  accessToken           String?   @map("access_token") @db.Text
+  refreshToken          String?   @map("refresh_token") @db.Text
+  idToken               String?   @map("id_token") @db.Text
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?   @db.Text
+  password              String?   @db.VarChar(255)
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([providerId, accountId])
+  @@map("accounts")
+}
+
+// Tokens temporales de verificación y recuperación de contraseña.
+model Verification {
+  id         String   @id @default(uuid()) @db.Uuid
+  identifier String   @db.VarChar(255)
+  value      String   @db.Text
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([identifier])
+  @@index([expiresAt])
+  @@map("verifications")
+}
+
 model UserProfile {
   id                    String   @id @default(uuid()) @db.Uuid
   userId                String   @unique @map("user_id") @db.Uuid
   bio                   String?  @db.Text
-  avatarUrl             String?  @map("avatar_url") @db.VarChar(512)
   countryCode           String?  @map("country_code") @db.VarChar(2)
   birthYear             Int?     @map("birth_year")
   shareResultsByDefault Boolean  @default(false) @map("share_results_by_default")

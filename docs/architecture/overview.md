@@ -33,15 +33,19 @@ routes/ -> controllers/ -> services/ -> repositories/ -> Prisma
 
 ## Paquetes compartidos
 
-| Paquete | Responsabilidad | Depende de |
-| --- | --- | --- |
-| `shared` | Tipos y esquemas Zod comunes | Zod |
-| `config` | Tokens de diseño y constantes de entorno seguras | Nada |
-| `quiz-engine` | Carga de preguntas, validación de respuestas y progreso | `shared` |
-| `music-engine` | Cálculo de afinidades y personalidades musicales | `shared` |
-| `api-client` | Cliente HTTP tipado para web y móvil | `shared` |
+| Paquete        | Responsabilidad                                         | Depende de |
+| -------------- | ------------------------------------------------------- | ---------- |
+| `shared`       | Tipos y esquemas Zod comunes                            | Zod        |
+| `config`       | Tokens de diseño y constantes de entorno seguras        | Nada       |
+| `quiz-engine`  | Carga de preguntas, validación de respuestas y progreso | `shared`   |
+| `music-engine` | Cálculo de afinidades y personalidades musicales        | `shared`   |
+| `api-client`   | Cliente HTTP tipado para web y móvil                    | `shared`   |
 
 `quiz-engine` y `music-engine` son puros: no acceden a bases de datos ni a APIs externas. Así pueden testearse con Vitest y reutilizarse en backend, web y móvil.
+
+## Autenticación (Fase 2)
+
+Better Auth se monta en `/api/v1/auth` antes de `express.json()` y usa el adaptador de Prisma. El esquema central se mapea sobre `users`, `sessions`, `accounts` y `verifications`; las contraseñas se guardan con Argon2id en `accounts`, nunca en `users`. El plugin `anonymous` habilita invitados y el plugin `bearer` permite autenticar la app móvil sin cookies. Las rutas propias bajo `/users/me` usan el middleware `resolveSession`, que acepta cookie o `Authorization: Bearer`.
 
 ## Fronteras importantes
 
@@ -53,9 +57,9 @@ routes/ -> controllers/ -> services/ -> repositories/ -> Prisma
 
 ## Despliegue previsto
 
-| Componente | Proveedor |
-| --- | --- |
-| Web | Vercel o Netlify |
-| Backend | Render o Railway |
-| Base de datos | Neon PostgreSQL |
-| Móvil | Expo EAS Build |
+| Componente    | Proveedor        |
+| ------------- | ---------------- |
+| Web           | Vercel o Netlify |
+| Backend       | Render o Railway |
+| Base de datos | Neon PostgreSQL  |
+| Móvil         | Expo EAS Build   |

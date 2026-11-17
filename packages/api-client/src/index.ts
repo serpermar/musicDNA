@@ -1,11 +1,14 @@
 /**
  * Cliente HTTP tipado, compartido por web y móvil.
- * La autenticación se añadirá en la Fase 2.
+ * Web usa cookies (credentials: 'include'); móvil usa bearer token.
  */
 
 export interface ApiClientOptions {
   baseUrl: string;
   getToken?: () => string | null | Promise<string | null>;
+  credentials?: RequestCredentials;
+  /** Se llama con el token devuelto por Better Auth en la cabecera `set-auth-token`. */
+  onToken?: (token: string | null) => void | Promise<void>;
 }
 
 export class ApiError extends Error {
@@ -34,6 +37,7 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     const token = await options.getToken?.();
     const response = await fetch(`${baseUrl}${path}`, {
       method,
+      credentials: options.credentials ?? 'include',
       headers: {
         Accept: 'application/json',
         ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
@@ -43,6 +47,12 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     });
 
     const payload: unknown = await response.json().catch(() => null);
+
+    const issuedToken = response.headers.get('set-auth-token');
+    if (issuedToken && options.onToken) {
+      await options.onToken(issuedToken);
+    }
+
     if (!response.ok) {
       throw new ApiError(`Request failed with status ${response.status}`, response.status, payload);
     }
@@ -57,3 +67,5 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     delete: <T>(path: string) => request<T>('DELETE', path),
   };
 }
+
+export { createAuthApi, type AuthApi } from './auth';

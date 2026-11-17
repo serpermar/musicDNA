@@ -15,8 +15,11 @@
     "db:studio": "prisma studio --schema ../../database/prisma/schema.prisma"
   },
   "dependencies": {
+    "@better-auth/prisma-adapter": "^1.7.25",
     "@musicdna/shared": "workspace:*",
+    "@node-rs/argon2": "^2.2.2",
     "@prisma/client": "^6.16.2",
+    "better-auth": "^1.7.25",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",

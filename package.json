@@ -21,7 +21,9 @@
     "db:studio": "pnpm --filter @musicdna/backend db:studio"
   },
   "devDependencies": {
+    "@prisma/client": "6.19.3",
     "prettier": "^3.6.2",
+    "prisma": "6.19.3",
     "turbo": "^2.5.8",
     "typescript": "^5.9.3"
   }

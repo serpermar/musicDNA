@@ -2,16 +2,17 @@
 
 El proyecto se desarrolla por fases. No se implementa una fase hasta que la anterior esté cerrada y documentada.
 
-| Fase | Nombre | Estado | Entregable principal |
-| --- | --- | --- | --- |
-| 1 | Fundación | **En curso** | Monorepo, apps, paquetes, Prisma y documentación |
-| 2 | Autenticación | Pendiente | Registro, login, sesiones y perfil de usuario |
-| 3 | Cuestionario | Pendiente | Preguntas, respuestas, sesiones y Quiz Engine |
-| 4 | MusicDNA | Pendiente | Algoritmo de puntuación, perfiles y personalidades |
-| 5 | Aplicación web | Pendiente | Landing, cuestionario, dashboard y recomendaciones |
-| 6 | Aplicación móvil | Pendiente | Android/iOS con Expo y NativeWind |
-| 7 | Integraciones y social | Pendiente | Spotify, comparador, compartir e historial |
-| 8 | Calidad y lanzamiento | Pendiente | Tests, seguridad, CI/CD y despliegue |
+| Fase | Nombre                 | Estado         | Entregable principal                               |
+| ---- | ---------------------- | -------------- | -------------------------------------------------- |
+| 1    | Fundación              | **Completada** | Monorepo, apps, paquetes, Prisma y documentación   |
+| 2    | Autenticación          | **Completada** | Registro, login, sesiones y perfil de usuario      |
+| 3    | Cuestionario           | Pendiente      | Preguntas, respuestas, sesiones y Quiz Engine      |
+| 3    | Cuestionario           | Pendiente      | Preguntas, respuestas, sesiones y Quiz Engine      |
+| 4    | MusicDNA               | Pendiente      | Algoritmo de puntuación, perfiles y personalidades |
+| 5    | Aplicación web         | Pendiente      | Landing, cuestionario, dashboard y recomendaciones |
+| 6    | Aplicación móvil       | Pendiente      | Android/iOS con Expo y NativeWind                  |
+| 7    | Integraciones y social | Pendiente      | Spotify, comparador, compartir e historial         |
+| 8    | Calidad y lanzamiento  | Pendiente      | Tests, seguridad, CI/CD y despliegue               |
 
 ## Fase 1 — Fundación
 
@@ -22,6 +23,18 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 - [x] Modelo relacional de Prisma con las entidades mínimas requeridas.
 - [x] Documentación inicial y convenciones.
 - [x] Verificación de instalación, tipos, build y tests iniciales.
+
+## Fase 2 — Autenticación
+
+- [x] Integrar Better Auth Express con el adaptador de Prisma.
+- [x] Mapear el esquema central (`users`, `sessions`, `accounts`, `verifications`) sobre el modelo existente.
+- [x] Registro e inicio de sesión con email y contraseña; hash Argon2id.
+- [x] Acceso como invitado mediante el plugin anónimo.
+- [x] Sesiones revocables, listado de sesiones y borrado de cuenta.
+- [x] Recuperación de contraseña (enlace dev; proveedor de email pendiente para producción).
+- [x] Soporte de bearer token para la app móvil.
+- [x] Cliente API compartido y pantalla web de autenticación/perfil.
+- [x] Tests de esquemas, hash y rutas protegidas.
 
 ## Criterios de desarrollo
 

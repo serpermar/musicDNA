@@ -7,12 +7,7 @@ export type UUID = string;
 export type ISODate = string;
 
 export type QuestionType =
-  | 'SINGLE_CHOICE'
-  | 'MULTIPLE_CHOICE'
-  | 'SCALE'
-  | 'TWO_OPTION'
-  | 'VISUAL_CARD'
-  | 'ADAPTIVE';
+  'SINGLE_CHOICE' | 'MULTIPLE_CHOICE' | 'SCALE' | 'TWO_OPTION' | 'VISUAL_CARD' | 'ADAPTIVE';
 
 export type QuizSessionStatus = 'IN_PROGRESS' | 'COMPLETED' | 'ABANDONED';
 
@@ -21,9 +16,48 @@ export type RecommendationKind = 'ARTIST' | 'SONG' | 'GENRE' | 'PLAYLIST' | 'COM
 export interface User {
   id: UUID;
   email: string;
-  displayName: string | null;
+  displayName: string;
   isGuest: boolean;
+  emailVerified: boolean;
   createdAt: ISODate;
+}
+
+/** Datos de sesión que la API expone a web y móvil. Nunca incluye tokens. */
+export interface AuthUser extends User {
+  avatarUrl: string | null;
+}
+
+export interface SessionInfo {
+  id: UUID;
+  userId: UUID;
+  ipAddress: string | null;
+  userAgent: string | null;
+  expiresAt: ISODate;
+  createdAt: ISODate;
+  isCurrent: boolean;
+}
+
+export interface UserProfileDetails {
+  bio: string | null;
+  countryCode: string | null;
+  birthYear: number | null;
+  shareResultsByDefault: boolean;
+  privacy: 'PUBLIC' | 'UNLISTED' | 'PRIVATE';
+}
+
+export interface CurrentUserResponse {
+  user: AuthUser;
+  profile: UserProfileDetails | null;
+}
+
+/** Vista segura de la sesión: nunca expone el token de sesión. */
+export interface AuthSessionPayload {
+  user: AuthUser;
+  session: {
+    id: UUID;
+    expiresAt: ISODate;
+    createdAt: ISODate;
+  };
 }
 
 export interface QuestionOption {
