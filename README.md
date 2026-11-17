@@ -52,8 +52,12 @@ corepack enable
 # 2. Instalar dependencias del workspace
 pnpm install
 
-# 3. Crear el archivo de entorno
+# 3. Crear los archivos de entorno
+# El backend carga apps/backend/.env (dotenv lo resuelve desde su carpeta).
+Copy-Item apps/backend/.env.example apps/backend/.env
+# La raíz sirve como referencia compartida; web y móvil tienen valores por defecto en local.
 Copy-Item .env.example .env
+# Rellena DATABASE_URL y SESSION_SECRET en apps/backend/.env antes de continuar.
 
 # 4. Comandos disponibles
 pnpm dev          # arranca todas las apps en modo desarrollo
