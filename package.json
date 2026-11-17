@@ -2,6 +2,7 @@
   "name": "musicdna",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Your music. Your personality. Your DNA.",
   "license": "UNLICENSED",
   "packageManager": "pnpm@12.21.0",
@@ -11,21 +12,29 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "lint": "turbo run lint",
+    "lint": "turbo run lint && eslint eslint.config.js database/scripts",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "audit": "pnpm audit --audit-level=high",
+    "audit:prod": "pnpm audit --prod --audit-level=high",
+    "audit:ci": "pnpm audit --prod --audit-level=critical",
     "db:generate": "pnpm --filter @musicdna/backend db:generate",
     "db:migrate": "pnpm --filter @musicdna/backend db:migrate",
     "db:seed": "pnpm --filter @musicdna/backend db:seed",
     "db:studio": "pnpm --filter @musicdna/backend db:studio"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@prisma/client": "6.19.3",
+    "eslint": "^10.15.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
     "prettier": "^3.6.2",
     "prisma": "6.19.3",
     "turbo": "^2.5.8",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.73.0"
   }
 }

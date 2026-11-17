@@ -10,6 +10,21 @@ describe('API v1', () => {
     expect(response.body).toMatchObject({ status: 'ok', service: 'musicdna-backend' });
   });
 
+  it('impide que se cachen las respuestas de la API', async () => {
+    const response = await request(createApp()).get('/api/v1/health');
+
+    expect(response.headers['cache-control']).toBe('no-store');
+  });
+
+  it('rechaza cuerpos HTTP más grandes de 256 KB', async () => {
+    const response = await request(createApp())
+      .post('/api/v1/shares')
+      .set('Content-Type', 'application/json')
+      .send({ payload: 'x'.repeat(300 * 1024) });
+
+    expect(response.status).toBe(413);
+  });
+
   it('expone el endpoint de estado de Better Auth', async () => {
     const response = await request(createApp()).get('/api/v1/auth/ok');
 

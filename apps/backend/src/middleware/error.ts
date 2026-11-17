@@ -6,6 +6,12 @@ function isPrismaError(error: unknown, code: string): boolean {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === code;
 }
 
+function hasStatus(error: unknown, status: number): boolean {
+  return (
+    typeof error === 'object' && error !== null && 'status' in error && error.status === status
+  );
+}
+
 export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   if (error instanceof ZodError) {
     res.status(400).json({
@@ -25,6 +31,14 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
         message: error.message,
         ...(error.details === undefined ? {} : { details: error.details }),
       },
+    });
+    return;
+  }
+
+  // body-parser lanza un error con status 413 cuando el cuerpo supera el límite.
+  if (hasStatus(error, 413)) {
+    res.status(413).json({
+      error: { code: 'PAYLOAD_TOO_LARGE', message: 'Cuerpo de petición demasiado grande' },
     });
     return;
   }

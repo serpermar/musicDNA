@@ -11,6 +11,8 @@ const envSchema = z
     PORT: z.coerce.number().int().positive().max(65535).default(4000),
     CORS_ORIGIN: z.string().default('http://localhost:5173'),
     BETTER_AUTH_URL: z.string().url().default('http://localhost:4000'),
+    // Detrás de un reverse proxy (Railway/Render/Fly) hay que confiar en X-Forwarded-For.
+    TRUST_PROXY: z.enum(['0', '1']).default('0'),
 
     // En producción la base de datos y el secreto de sesión son obligatorios.
     DATABASE_URL: z.string().url().optional(),
@@ -42,7 +44,7 @@ const envSchema = z
       for (const key of requiredSpotify) {
         if (!value[key] || String(value[key]).trim().length === 0) {
           ctx.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: 'custom',
             path: [key],
             message: `${key} es obligatoria cuando se habilita Spotify`,
           });
@@ -52,14 +54,14 @@ const envSchema = z
 
     if (!value.DATABASE_URL) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['DATABASE_URL'],
         message: 'DATABASE_URL es obligatoria en producción',
       });
     }
     if (!value.SESSION_SECRET) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['SESSION_SECRET'],
         message: 'SESSION_SECRET es obligatoria en producción',
       });

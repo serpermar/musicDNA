@@ -16,8 +16,9 @@
 }
 ```
 
-- Códigos de estado: `200` éxito, `201` creación, `204` sin contenido, `400` validación, `401` no autenticado, `403` sin permisos, `404` no encontrado, `429` rate limit, `500` error interno, `503` integración no configurada (por ejemplo, Spotify sin credenciales).
-- Rate limiting global aplicado desde la Fase 1.
+- Códigos de estado: `200` éxito, `201` creación, `204` sin contenido, `400` validación, `401` no autenticado, `403` sin permisos, `404` no encontrado, `409` conflicto (recurso duplicado), `413` cuerpo demasiado grande (límite de 256 KB), `429` rate limit, `500` error interno, `503` integración no configurada (por ejemplo, Spotify sin credenciales).
+- Rate limiting desde la Fase 1: 200 peticiones/15 min globales, 30 peticiones/15 min en `/auth` y `/spotify`.
+- Todas las respuestas de `/api/v1` incluyen `Cache-Control: no-store`.
 - Ninguna respuesta contendrá secretos, tokens de Spotify ni credenciales.
 
 ## Endpoints
@@ -91,8 +92,6 @@ La app Expo reutiliza `createAuthApi` y `createQuizApi`. El bearer token se obti
 
 El callback de Spotify redirige al origen configurado en `CORS_ORIGIN` con `?spotify=connected` o `?spotify=error`. El `state` va firmado con HMAC-SHA256 y caduca en 10 minutos. Si faltan credenciales de Spotify, `/spotify/auth` responde `503 SPOTIFY_UNAVAILABLE`. En ningún caso se devuelven `access_token`, `refresh_token` ni el identificador de Spotify al cliente.
 
-### Planificados
+### Fase 8 — Calidad y lanzamiento
 
-| Fase | Recursos                       |
-| ---- | ------------------------------ |
-| 8    | `/genres`, `/admin`, auditoría |
+La Fase 8 no añade endpoints de negocio. Refuerza los existentes con `Cache-Control: no-store`, límite de cuerpo de 256 KB, rate limit específico para Spotify y errores sin stacks. Los generadores de catálogo (`/genres`) y administración (`/admin`) siguen pendientes para una fase posterior.

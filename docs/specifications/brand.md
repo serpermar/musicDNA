@@ -6,16 +6,16 @@ Moderna, tecnológica y musical. Sensación de descubrimiento, creatividad y per
 
 ## Paleta
 
-| Uso | Color | Hex |
-| --- | --- | --- |
-| Fondo principal | Dark | `#0B0B14` |
-| Superficie | Dark surface | `#151525` |
-| Primario | Morado eléctrico | `#8B5CF6` |
-| Secundario | Azul intenso | `#2563EB` |
-| Complemento | Rosa | `#EC4899` |
-| Complemento | Naranja | `#F97316` |
-| Texto | Casi blanco | `#F8FAFC` |
-| Texto secundario | Gris claro | `#A5B4FC` |
+| Uso              | Color            | Hex       |
+| ---------------- | ---------------- | --------- |
+| Fondo principal  | Dark             | `#0B0B14` |
+| Superficie       | Dark surface     | `#151525` |
+| Primario         | Morado eléctrico | `#8B5CF6` |
+| Secundario       | Azul intenso     | `#2563EB` |
+| Complemento      | Rosa             | `#EC4899` |
+| Complemento      | Naranja          | `#F97316` |
+| Texto            | Casi blanco      | `#F8FAFC` |
+| Texto secundario | Gris claro       | `#A5B4FC` |
 
 ## Tipografía
 

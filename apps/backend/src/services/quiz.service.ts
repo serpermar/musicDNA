@@ -2,7 +2,6 @@ import {
   canCompleteQuiz,
   getNextQuestionIndex,
   getQuizView,
-  isSessionOpen,
   validateResponse,
   type QuizProgress,
 } from '@musicdna/quiz-engine';

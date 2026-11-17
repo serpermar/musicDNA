@@ -6,7 +6,7 @@ Plataforma multiplataforma de descubrimiento musical y personalidad musical. Mus
 
 ## Estado del proyecto
 
-**Fase 7 — Integraciones y social completada.** El monorepo incluye autenticación con Better Auth, cuestionario adaptativo reanudable, el algoritmo determinista `music-engine`, aplicaciones web y móvil, recomendaciones y comparador deterministas, historial de perfiles, enlaces compartidos sin datos personales y OAuth opcional de Spotify con tokens cifrados en reposo. Spotify no es necesario para el test ni para el algoritmo.
+**Fase 8 — Calidad y lanzamiento completada.** El monorepo incluye autenticación con Better Auth, cuestionario adaptativo reanudable, el algoritmo determinista `music-engine`, aplicaciones web y móvil, recomendaciones y comparador deterministas, historial de perfiles, enlaces compartidos sin datos personales y OAuth opcional de Spotify con tokens cifrados en reposo. Spotify no es necesario para el test ni para el algoritmo. El pipeline de GitHub Actions verifica formato, lint, tipos, tests, build y auditoría de dependencias en cada PR.
 
 Ver el plan completo en [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -31,7 +31,9 @@ musicdna/
     ├── specifications/
     ├── architecture/
     ├── database/
-    └── api/
+    ├── api/
+    ├── security.md      # controles y auditoría de dependencias
+    └── deployment.md    # despliegue sin Docker
 ```
 
 ## Requisitos
@@ -57,8 +59,11 @@ Copy-Item .env.example .env
 pnpm dev          # arranca todas las apps en modo desarrollo
 pnpm build        # compila todas las apps y paquetes
 pnpm typecheck    # chequeo de tipos del monorepo
-pnpm lint         # lint del monorepo
+pnpm lint         # lint del monorepo (ESLint)
 pnpm test         # tests del monorepo
+pnpm format:check # comprueba el formato con Prettier
+pnpm audit        # auditoría completa de dependencias
+pnpm audit:ci     # auditoría de producción (bloquea críticos)
 pnpm db:generate  # genera el cliente de Prisma
 pnpm db:migrate   # aplica migraciones (requiere DATABASE_URL)
 pnpm db:seed      # carga el quiz "MusicDNA Core" (requiere DATABASE_URL)
@@ -93,9 +98,10 @@ pnpm --filter @musicdna/backend dev
 - **Social**: recomendaciones y compatibilidad se calculan con reglas puras; los enlaces compartidos usan un slug opaco y no exponen `userId`, correo ni tokens.
 - **Spotify**: integración opcional en el backend; el `state` del OAuth va firmado y los tokens se cifran con AES-256-GCM usando `SPOTIFY_TOKEN_KEY`. Nunca se envían al frontend.
 - **Secretos** solo en el backend y en variables de entorno; nunca en el frontend ni en el repositorio.
-- **Sin Docker** en esta etapa del proyecto.
+- **Calidad**: ESLint con configuración plana y CI obligatoria en GitHub Actions; los hallazgos de seguridad y sus excepciones se documentan en [`docs/security.md`](docs/security.md).
+- **Sin Docker** en esta etapa del proyecto; el despliegue se describe en [`docs/deployment.md`](docs/deployment.md).
 
-Más detalles en [`docs/architecture/overview.md`](docs/architecture/overview.md).
+Más detalles en [`docs/architecture/overview.md`](docs/architecture/overview.md) y en las [decisiones de arquitectura](docs/architecture/decisions.md).
 
 ## Licencia
 

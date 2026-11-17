@@ -15,7 +15,9 @@ export function validateBody(schema: ZodType): RequestHandler {
 }
 
 /** Valida parámetros de la URL con un esquema Zod. */
-export function validateParams(schema: ZodType): RequestHandler {
+export function validateParams<T extends Record<string, string>>(
+  schema: ZodType<T>,
+): RequestHandler {
   return (req, _res, next) => {
     const result = schema.safeParse(req.params);
     if (!result.success) {

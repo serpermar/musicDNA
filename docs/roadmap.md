@@ -11,7 +11,7 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 | 5    | Aplicación web         | **Completada** | Landing, cuestionario, dashboard y resultados      |
 | 6    | Aplicación móvil       | **Completada** | Android/iOS con Expo y NativeWind                  |
 | 7    | Integraciones y social | **Completada** | Spotify, comparador, compartir e historial         |
-| 8    | Calidad y lanzamiento  | Pendiente      | Tests, seguridad, CI/CD y despliegue               |
+| 8    | Calidad y lanzamiento  | **Completada** | Tests, seguridad, CI/CD y despliegue               |
 
 ## Fase 1 — Fundación
 
@@ -84,6 +84,17 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 - [x] Vista pública web en `/s/:slug` para mostrar un perfil compartido sin autenticación.
 - [x] OAuth opcional de Spotify: `GET /spotify/auth`, `GET /spotify/callback` y `POST /spotify/disconnect`, con state firmado, intercambio de código y tokens cifrados con AES-256-GCM; `GET /spotify/status` nunca devuelve tokens.
 - [x] Tests del motor social, del servicio (inyección de repositorio), de la integración de Spotify (state, cifrado e intercambio) y de protección de rutas.
+
+## Fase 8 — Calidad y lanzamiento
+
+- [x] ESLint 9+ con configuración plana compartida y script `lint` en los 8 paquetes; `pnpm lint` ejecuta todo el monorepo y el código suelto de `database/scripts`.
+- [x] GitHub Actions en `.github/workflows/ci.yml`: Node 22, pnpm 12 con `--frozen-lockfile`, `prisma generate`, `format:check`, `lint`, `typecheck`, `test`, `build` y auditoría.
+- [x] Actualización de Zod a `^4.6.7` y del manejo de errores de validación; `code: 'custom'` en `env.ts` y generic en `validateParams`.
+- [x] Overrides de pnpm moveidos a `pnpm-workspace.yaml` (`tinypool`, `postcss`): resuelta la vulnerabilidad crítica de Tinypool.
+- [x] Auditoría separada: `pnpm audit`, `pnpm audit:prod` y `pnpm audit:ci` (bloquea solo críticos); excepciones del toolchain de Expo documentadas en `docs/security.md`.
+- [x] Endurecimiento del backend: `Cache-Control: no-store`, límite de cuerpo a 256 KB con respuesta `413`, límite de rate para Spotify, `TRUST_PROXY` explícito y errores sin stacks ni secretos.
+- [x] Documentación de seguridad, despliegue y decisiones (ADR-009 y ADR-010).
+- [x] Verificación final: `format:check`, `lint`, `typecheck`, 61 tests y `build` en verde.
 
 ## Criterios de desarrollo
 

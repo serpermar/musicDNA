@@ -11,6 +11,7 @@
     "./brand.json": "./brand.json"
   },
   "scripts": {
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   }
 }

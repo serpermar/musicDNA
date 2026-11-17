@@ -1,9 +1,4 @@
-import type {
-  AuthSessionPayload,
-  CurrentUserResponse,
-  MusicProfile,
-  SessionInfo,
-} from '@musicdna/shared';
+import type { AuthSessionPayload, MusicProfile, SessionInfo } from '@musicdna/shared';
 import { useEffect, useState, type FormEvent } from 'react';
 import { ProfileResult } from './components/ProfileResult';
 import { QuizFlow } from './components/QuizFlow';
@@ -31,7 +26,6 @@ export default function App() {
   const [newPassword, setNewPassword] = useState('');
   const [token, setToken] = useState(() => new URLSearchParams(location.search).get('token') ?? '');
   const [session, setSession] = useState<AuthSessionPayload | null>(null);
-  const [profile, setProfile] = useState<CurrentUserResponse | null>(null);
   const [musicProfile, setMusicProfile] = useState<MusicProfile | null>(null);
   const [quizSessionId, setQuizSessionId] = useState<string | null>(null);
   const [sessions, setSessions] = useState<SessionInfo[]>([]);
@@ -55,7 +49,6 @@ export default function App() {
           authApi.listSessions(),
           quizApi.getMyProfile(),
         ]);
-        setProfile(me);
         setSessions(list);
         setMusicProfile(music.profile);
         setDisplayName(me.user.displayName);
@@ -117,8 +110,7 @@ export default function App() {
     setBusy(true);
     setError(null);
     try {
-      const updated = await authApi.updateMe({ displayName, bio });
-      setProfile(updated);
+      await authApi.updateMe({ displayName, bio });
       setNotice('Perfil actualizado.');
     } catch (cause) {
       setError(errorMessage(cause));
@@ -137,7 +129,6 @@ export default function App() {
     try {
       await authApi.signOut();
       setSession(null);
-      setProfile(null);
       setMusicProfile(null);
       setQuizSessionId(null);
       setSessions([]);
@@ -166,7 +157,6 @@ export default function App() {
     try {
       await authApi.deleteAccount();
       setSession(null);
-      setProfile(null);
       setMusicProfile(null);
       setQuizSessionId(null);
       setSessions([]);

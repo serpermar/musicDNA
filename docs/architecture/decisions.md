@@ -55,3 +55,17 @@
 - **Contexto:** compartir un perfil y conectar Spotify introducen datos sensibles: identidad del usuario y tokens de acceso a su cuenta musical.
 - **Decisión:** los enlaces usan un slug aleatorio y una vista limitada (`SharedProfileView`) que excluye `userId`, correo y tokens. Solo se puede comparar contra perfiles propios o marcados como `PUBLIC`. El OAuth de Spotify usa un `state` firmado con caducidad, intercambia el código en el backend y guarda `access_token`/`refresh_token` cifrados con AES-256-GCM; el callback solo devuelve un estado al frontend.
 - **Consecuencias:** no hay fugas de identidad ni de secretos; si falta `SPOTIFY_TOKEN_KEY` u otras credenciales, la integración responde `503` y el núcleo del producto sigue funcionando.
+
+## ADR-009 — Calidad automatizada como compuerta de merge
+
+- **Estado:** aceptada (Fase 8).
+- **Contexto:** `pnpm lint` no ejecutaba ninguna tarea y la calidad dependía de la disciplina manual; además, Zod 4 y pnpm 12 cambiaban la configuración de validación y de overrides.
+- **Decisión:** ESLint 9+ con configuración plana en la raíz y script `lint` en los 8 paquetes; GitHub Actions ejecuta `format:check`, `lint`, `typecheck`, `test`, `build` y `prisma generate` con `--frozen-lockfile`. Zod se actualizó a `^4.6.7` y los overrides de dependencias se trasladaron a `pnpm-workspace.yaml`.
+- **Consecuencias:** cualquier PR con errores de estilo, tipos, tests o formato se bloquea antes de fusionarse; la regla `react-hooks/set-state-in-effect` se desactiva de forma documentada porque la carga inicial de datos es asíncrona y deliberada.
+
+## ADR-010 — Defensa en profundidad y auditoría con excepciones explícitas
+
+- **Estado:** aceptada (Fase 8).
+- **Contexto:** la auditoría de dependencias mostraba hallazgos de severidad alta en el toolchain de Expo/Metro y en la CLI de Prisma, con correcciones que exigen cambios major. Bloquear el pipeline por todos ellos impediría publicar, pero ignorarlos sería irresponsable.
+- **Decisión:** el backend añade `Cache-Control: no-store`, límite de cuerpo de 256 KB con `413`, rate limit específico para Spotify y `TRUST_PROXY` explícito. CI bloquea solo vulnerabilidades **critical** (`pnpm audit:ci`) y ejecuta la auditoría completa como trabajo informativo. Las excepciones y su plan de revisión se documentan en `docs/security.md`.
+- **Consecuencias:** no hay hallazgos critical pendientes; las excepciones restantes son de build-time y no forman parte del artefacto de producción. Cualquier nueva vulnerabilidad critical rompe el pipeline.

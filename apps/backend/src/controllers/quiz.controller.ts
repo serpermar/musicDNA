@@ -1,5 +1,5 @@
 import type { SubmitAnswerInput } from '@musicdna/shared';
-import type { Request, RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import { quizService } from '../services/quiz.service';
 import { asyncHandler } from '../utils/async-handler';
 import { currentUserId } from '../utils/current-user';

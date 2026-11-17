@@ -1,10 +1,19 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
 
 # pnpm 12: aprobar de forma explícita los scripts de build de dependencias de confianza.
 allowBuilds:
-  "@prisma/client": true
-  "@prisma/engines": true
+  '@prisma/client': true
+  '@prisma/engines': true
   prisma: true
   esbuild: true
+
+# pnpm 12 aplica una edad mínima de publicación; esta versión se excluye de forma explícita.
+minimumReleaseAgeExclude:
+  - '@typescript-eslint/types@8.73.0'
+
+# Parcheos de dependencias transitivas con advisories conocidos.
+overrides:
+  tinypool: ^2.2.0
+  postcss: ^8.5.18
