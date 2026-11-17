@@ -146,6 +146,34 @@ const baseQuestions: QuestionSeed[] = [
   },
 ];
 
+const genreSeeds = [
+  { slug: 'indie', name: 'Indie' },
+  { slug: 'rock', name: 'Rock' },
+  { slug: 'electronic', name: 'Electrónica' },
+  { slug: 'hiphop', name: 'Hip-hop' },
+  { slug: 'jazz', name: 'Jazz' },
+  { slug: 'pop', name: 'Pop' },
+  { slug: 'metal', name: 'Metal' },
+  { slug: 'folk', name: 'Folk' },
+];
+
+const traitSeeds = [
+  { slug: 'organic', label: 'Orgánico' },
+  { slug: 'electronic', label: 'Electrónico' },
+  { slug: 'rhythmic', label: 'Rítmico' },
+  { slug: 'melodic', label: 'Melódico' },
+  { slug: 'vocal', label: 'Vocal' },
+  { slug: 'orchestral', label: 'Orquestal' },
+  { slug: 'lyrical', label: 'Lírico' },
+  { slug: 'sonic', label: 'Sonoro' },
+  { slug: 'curated', label: 'Curaduría' },
+  { slug: 'social', label: 'Social' },
+  { slug: 'curious', label: 'Curioso' },
+  { slug: 'trendy', label: 'Tendencias' },
+  { slug: 'introspective', label: 'Introspectivo' },
+  { slug: 'communal', label: 'Comunitario' },
+];
+
 async function seedQuestion(
   quizId: string,
   definition: QuestionSeed,
@@ -203,6 +231,25 @@ async function seedQuestion(
 }
 
 async function main(): Promise<void> {
+  await Promise.all(
+    genreSeeds.map((genre) =>
+      prisma.musicGenre.upsert({
+        where: { slug: genre.slug },
+        create: genre,
+        update: { name: genre.name },
+      }),
+    ),
+  );
+  await Promise.all(
+    traitSeeds.map((trait) =>
+      prisma.personalityTrait.upsert({
+        where: { slug: trait.slug },
+        create: trait,
+        update: { label: trait.label },
+      }),
+    ),
+  );
+
   const quiz = await prisma.quiz.upsert({
     where: { slug: 'musicdna-core' },
     create: {
@@ -249,7 +296,10 @@ async function main(): Promise<void> {
     );
   }
 
-  console.log(`Seed completado: quiz "${quiz.title}" con ${baseQuestions.length + 1} preguntas.`);
+  console.log(
+    `Seed completado: quiz "${quiz.title}" con ${baseQuestions.length + 1} preguntas, ` +
+      `${genreSeeds.length} géneros y ${traitSeeds.length} rasgos.`,
+  );
 }
 
 main()

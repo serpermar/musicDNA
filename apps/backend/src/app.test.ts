@@ -37,4 +37,13 @@ describe('API v1', () => {
     expect(response.status).toBe(400);
     expect(response.body.error.code).toBe('VALIDATION_ERROR');
   });
+
+  it('protege la generación y consulta de perfiles musicales', async () => {
+    const app = createApp();
+    const create = await request(app).post('/api/v1/profiles').send({ sessionId: 'no-uuid' });
+    const latest = await request(app).get('/api/v1/profiles/me');
+
+    expect(create.status).toBe(401);
+    expect(latest.status).toBe(401);
+  });
 });

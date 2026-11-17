@@ -27,3 +27,10 @@
 - **Contexto:** prioridad de aprendizaje y simplicidad; los proveedores de despliegue elegidos soportan Node y PostgreSQL directamente.
 - **Decisión:** no incluir contenedores todavía.
 - **Consecuencias:** menos configuración inicial; se reconsiderará si aparece una necesidad real.
+
+## ADR-005 — Arquetipos por reglas, no por IA
+
+- **Estado:** aceptada (Fase 4).
+- **Contexto:** el nombre y la descripción de la personalidad musical deben ser reproducibles, explicables y consistentes entre web y móvil.
+- **Decisión:** `music-engine` define un catálogo ordenado de arquetipos con predicados sobre puntuaciones normalizadas; el primero que cumple gana y el último actúa como fallback.
+- **Consecuencias:** el resultado es auditable y testeable; cambiar un arquetipo es un cambio de código versionado con `algorithmVersion`.

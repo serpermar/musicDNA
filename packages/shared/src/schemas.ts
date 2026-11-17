@@ -90,6 +90,11 @@ export const updateProgressSchema = z.object({
   currentQuestionIndex: z.number().int().min(0).max(1000),
 });
 
+/** Esquema de generación de perfil a partir de una sesión completada (Fase 4). */
+export const createProfileSchema = z.object({
+  sessionId: uuidSchema,
+});
+
 export type Email = z.infer<typeof emailSchema>;
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type SignInInput = z.infer<typeof signInSchema>;
@@ -99,4 +104,5 @@ export type UpdateUserInput = z.infer<typeof updateUserSchema>;
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 export type CreateQuizSessionInput = z.infer<typeof createQuizSessionSchema>;
 export type UpdateProgressInput = z.infer<typeof updateProgressSchema>;
+export type CreateProfileInput = z.infer<typeof createProfileSchema>;
 export type SubmitAnswerInput = z.infer<typeof submitAnswerSchema>;

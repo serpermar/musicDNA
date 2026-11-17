@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "^1.7.25",
+    "@musicdna/music-engine": "workspace:*",
     "@musicdna/quiz-engine": "workspace:*",
     "@musicdna/shared": "workspace:*",
     "@node-rs/argon2": "^2.2.2",

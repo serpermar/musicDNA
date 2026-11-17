@@ -7,7 +7,7 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 | 1    | Fundación              | **Completada** | Monorepo, apps, paquetes, Prisma y documentación   |
 | 2    | Autenticación          | **Completada** | Registro, login, sesiones y perfil de usuario      |
 | 3    | Cuestionario           | **Completada** | Preguntas, respuestas, sesiones y Quiz Engine      |
-| 4    | MusicDNA               | Pendiente      | Algoritmo de puntuación, perfiles y personalidades |
+| 4    | MusicDNA               | **Completada** | Algoritmo de puntuación, perfiles y personalidades |
 | 5    | Aplicación web         | Pendiente      | Landing, cuestionario, dashboard y recomendaciones |
 | 6    | Aplicación móvil       | Pendiente      | Android/iOS con Expo y NativeWind                  |
 | 7    | Integraciones y social | Pendiente      | Spotify, comparador, compartir e historial         |
@@ -44,6 +44,16 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 - [x] Rutas `/quizzes` y `/quiz-sessions` con validación Zod y propiedad de sesión verificada.
 - [x] Seed idempotente del quiz "MusicDNA Core" con preguntas de personalidad, géneros, décadas, instrumentos, energía, letras y hábitos.
 - [x] Tests del servicio (progreso, adaptatividad, validación, permisos) y de protección/validación de rutas.
+
+## Fase 4 — MusicDNA
+
+- [x] `music-engine` puro: agregación de géneros, décadas, instrumentos, energía, emoción y rasgos con puntuaciones 0-100 y rangos.
+- [x] Catálogo determinista de 8 arquetipos de personalidad con reglas por prioridad y fallback equilibrado.
+- [x] Servicio de perfiles: valida sesión completada y propiedad, calcula el perfil, resuelve catálogos y persiste `MusicProfile`, `GenreScore` y `PersonalityScore`.
+- [x] Regeneración idempotente del perfil de una sesión (sustituye puntuaciones anteriores).
+- [x] Rutas `POST /profiles` y `GET /profiles/me` con autenticación y validación Zod.
+- [x] Seed extendido con géneros y rasgos necesarios para la persistencia.
+- [x] Tests del algoritmo, del servicio de perfiles y de protección de rutas.
 
 ## Criterios de desarrollo
 

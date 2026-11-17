@@ -58,9 +58,18 @@
 
 El cuerpo de `/responses` usa `submitAnswerSchema`: `sessionId` debe coincidir con el de la ruta. La vista de una sesión incluye `view.questions` (preguntas visibles tras aplicar `showIf`), `view.progress` (`answered`, `total`, `percent`) y `view.nextQuestionIndex`. Solo el dueño de la sesión puede consultarla o modificarla; el resto recibe `403`.
 
+### Disponibles en la Fase 4
+
+| Método | Ruta                  | Descripción                                              | Auth |
+| ------ | --------------------- | -------------------------------------------------------- | ---- |
+| POST   | `/api/v1/profiles`    | Generar perfil desde `{ sessionId }` completado          | Sí   |
+| GET    | `/api/v1/profiles/me` | Último perfil del usuario (`profile: null` si no existe) | Sí   |
+
+`POST /profiles` devuelve `201` con afinidades de género (dominante + secundarias), década favorita, energía, emoción, rasgos y arquetipo. Solo se puede generar a partir de una sesión propia en estado `COMPLETED`; repetir la llamada sobre la misma sesión actualiza el perfil existente. Los géneros y rasgos se resuelven contra los catálogos cargados por `pnpm db:seed`.
+
 ### Planificados
 
 | Fase | Recursos                                         |
 | ---- | ------------------------------------------------ |
-| 4    | `/profiles`, `/genres`, `/recommendations`       |
+| 5    | `/genres`, `/recommendations`                    |
 | 7    | `/spotify`, `/comparisons`, `/history`, `/admin` |

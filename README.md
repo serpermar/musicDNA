@@ -6,7 +6,7 @@ Plataforma multiplataforma de descubrimiento musical y personalidad musical. Mus
 
 ## Estado del proyecto
 
-**Fase 3 — Cuestionario completada.** El monorepo incluye la estructura base, el modelo de datos con su migración inicial, autenticación con Better Auth (email/contraseña, invitados, bearer para móvil, sesiones revocables y recuperación de contraseña), hashes Argon2id, API REST para el usuario actual, una pantalla web funcional de acceso/perfil y el cuestionario completo: motor puro con reglas adaptativas, sesiones, respuestas validadas, progreso y seed del quiz "MusicDNA Core". El algoritmo de perfil se incorporará en la Fase 4.
+**Fase 4 — MusicDNA completada.** El monorepo incluye autenticación con Better Auth, cuestionario adaptativo con sesiones y progreso, y el algoritmo determinista `music-engine`: afinidades por género, década, instrumentos, energía, emoción y rasgos, con 8 arquetipos de personalidad. El perfil calculado se persiste y se expone vía `/api/v1/profiles`. La interfaz web del cuestionario y los resultados llegan en la Fase 5.
 
 Ver el plan completo en [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -89,6 +89,7 @@ pnpm --filter @musicdna/backend dev
 - **Autenticación** centralizada en Better Auth; el backend mapea su esquema sobre Prisma y hashea contraseñas con Argon2id.
 - **Sesiones**: cookies en web y bearer token en móvil; ambas revocables desde `/api/v1/users/me`.
 - **Cuestionario**: `quiz-engine` es puro; el backend solo orquesta persistencia y propiedad de la sesión. Las reglas adaptativas usan `metadata.showIf`.
+- **Algoritmo**: `music-engine` es determinista y auditable (sin IA ni Spotify); los arquetipos se eligen por reglas con umbrales sobre puntuaciones 0-100.
 - **Secretos** solo en el backend y en variables de entorno; nunca en el frontend ni en el repositorio.
 - **Sin Docker** en esta etapa del proyecto.
 

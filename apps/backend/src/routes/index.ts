@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getAuthMe } from '../controllers/auth.controller';
 import { healthController } from '../controllers/health.controller';
 import { requireAuth, resolveSession } from '../middleware/auth';
+import { profilesRouter } from './profile.routes';
 import { quizzesRouter, quizSessionsRouter } from './quiz.routes';
 import { usersRouter } from './users.routes';
 
@@ -17,5 +18,8 @@ router.use('/users', resolveSession, usersRouter);
 router.use('/quizzes', quizzesRouter);
 router.use('/quiz-sessions', quizSessionsRouter);
 
-// Fase 4: /profiles, /genres, /recommendations
+// Fase 4: perfiles musicales calculados.
+router.use('/profiles', profilesRouter);
+
+// Fase 5: /genres, /recommendations
 // Fase 7: /spotify, /comparisons, /history, /admin
