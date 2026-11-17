@@ -4,7 +4,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM"],
-    "types": ["nativewind/types"]
+    "types": ["nativewind/types", "node"]
   },
   "include": ["App.tsx", "index.js", "nativewind-env.d.ts", "src/**/*.ts", "src/**/*.tsx"]
 }

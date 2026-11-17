@@ -71,6 +71,10 @@ El cuerpo de `/responses` usa `submitAnswerSchema`: `sessionId` debe coincidir c
 
 La Fase 5 no añade endpoints: la web consume los recursos anteriores mediante `createQuizApi` (`@musicdna/api-client`), que cubre catálogo, sesiones, respuestas, cierre y perfil. La UI reanuda sesiones `IN_PROGRESS` y crea una nueva cuando la sesión no existe o ya está cerrada.
 
+### Fase 6 — Cliente móvil
+
+La app Expo reutiliza `createAuthApi` y `createQuizApi`. El bearer token se obtiene de Better Auth en la cabecera `set-auth-token`, se persiste con `expo-secure-store` y se envía en `Authorization` en cada petición. La variable `EXPO_PUBLIC_API_BASE_URL` apunta a `/api/v1` (por defecto `http://localhost:4000/api/v1`).
+
 ### Planificados
 
 | Fase | Recursos                                         |

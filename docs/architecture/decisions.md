@@ -34,3 +34,10 @@
 - **Contexto:** el nombre y la descripción de la personalidad musical deben ser reproducibles, explicables y consistentes entre web y móvil.
 - **Decisión:** `music-engine` define un catálogo ordenado de arquetipos con predicados sobre puntuaciones normalizadas; el primero que cumple gana y el último actúa como fallback.
 - **Consecuencias:** el resultado es auditable y testeable; cambiar un arquetipo es un cambio de código versionado con `algorithmVersion`.
+
+## ADR-006 — Bearer token persistido en SecureStore
+
+- **Estado:** aceptada (Fase 6).
+- **Contexto:** la app móvil no usa cookies y necesita mantener la sesión de Better Auth entre reinicios sin exponer el token en texto plano.
+- **Decisión:** el cliente HTTP compartido emite el token de `set-auth-token`; móvil lo guarda con `expo-secure-store` y lo envía como `Authorization: Bearer`. En web se mantiene el modo cookie con `credentials: 'include'`.
+- **Consecuencias:** no se comparte almacenamiento entre plataformas; si SecureStore falla (web/emulador) se usa un fallback en memoria y la sesión dura solo mientras la app está abierta.

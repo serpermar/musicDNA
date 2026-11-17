@@ -9,7 +9,7 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 | 3    | Cuestionario           | **Completada** | Preguntas, respuestas, sesiones y Quiz Engine      |
 | 4    | MusicDNA               | **Completada** | Algoritmo de puntuación, perfiles y personalidades |
 | 5    | Aplicación web         | **Completada** | Landing, cuestionario, dashboard y resultados      |
-| 6    | Aplicación móvil       | Pendiente      | Android/iOS con Expo y NativeWind                  |
+| 6    | Aplicación móvil       | **Completada** | Android/iOS con Expo y NativeWind                  |
 | 7    | Integraciones y social | Pendiente      | Spotify, comparador, compartir e historial         |
 | 8    | Calidad y lanzamiento  | Pendiente      | Tests, seguridad, CI/CD y despliegue               |
 
@@ -64,6 +64,15 @@ El proyecto se desarrolla por fases. No se implementa una fase hasta que la ante
 - [x] Visualización de resultados: arquetipo, géneros, década, energía, emoción y rasgos.
 - [x] Acceso como invitado y gestión de cuenta/sesiones conservada de la Fase 2.
 - [ ] Recomendaciones personalizadas en la web (se incorporan con la Fase 7).
+
+## Fase 6 — Aplicación móvil
+
+- [x] Cliente HTTP móvil con bearer token persistido en `expo-secure-store` (memoria en web).
+- [x] Autenticación: email/contraseña, registro y acceso como invitado.
+- [x] Cuestionario adaptativo con reanudación de sesión y selección por botones (escala 0-100 sin dependencia extra).
+- [x] Resultados visuales: arquetipo, géneros, década, energía, emoción y rasgos.
+- [x] Gestión de cuenta: perfil, sesiones, cierre de sesión y borrado de cuenta.
+- [x] Interfaz con NativeWind sobre los mismos tokens de marca que la web.
 
 ## Criterios de desarrollo
 

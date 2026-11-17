@@ -6,7 +6,7 @@ Plataforma multiplataforma de descubrimiento musical y personalidad musical. Mus
 
 ## Estado del proyecto
 
-**Fase 5 — Web completada.** El monorepo incluye autenticación con Better Auth, cuestionario adaptativo con sesiones reanudables, el algoritmo determinista `music-engine` y una aplicación web con dashboard, cuestionario y resultados visuales (arquetipo, géneros, década, energía, emoción y rasgos). Las recomendaciones personalizadas llegarán en fases posteriores.
+**Fase 6 — Móvil completada.** El monorepo incluye autenticación con Better Auth, cuestionario adaptativo con sesiones reanudables, el algoritmo determinista `music-engine`, una aplicación web con dashboard/resultados y una app Expo + NativeWind con las mismas pantallas. El token móvil se guarda con `expo-secure-store` y se envía como bearer. Las recomendaciones personalizadas llegarán en la Fase 7.
 
 Ver el plan completo en [`docs/roadmap.md`](docs/roadmap.md).
 
